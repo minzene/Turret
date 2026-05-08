@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace TurretDemo
@@ -142,20 +143,64 @@ namespace TurretDemo
             float distanceToTargetMeters = Vector3.Distance(muzzlePoint.position, currentTarget.position);
             runtimeIsWithinEngagementRange = engagementRangeWorldUnits <= 0f || distanceToTargetMeters <= engagementRangeWorldUnits;
 
-            UpdateYawTowardsTarget(currentTarget);
-            UpdatePitchTowardsTarget(currentTarget);
+            if (_isRebound == false)
+            {
+                UpdateYawTowardsTarget(currentTarget);
+                UpdatePitchTowardsTarget(currentTarget);
+            }
 
             RefreshAimDiagnostics(currentTarget);
 
-            bool canAttemptFire = runtimeIsWithinEngagementRange && CanFireAdditionalConditions(currentTarget);
+            bool canAttemptFire = runtimeIsWithinEngagementRange && CanFireAdditionalConditions(currentTarget) && _isRebound == false;
             bool cooldownBlocking = Time.time < lastFireTimeSeconds + fireIntervalSeconds;
             runtimeIsFireCooldownActive = runtimeIsAimedWithinThreshold && canAttemptFire && cooldownBlocking;
 
             if (canAttemptFire)
             {
-                TryFireIfAimed(currentTarget);
+                if (TryFireIfAimed(currentTarget) == true)
+                {
+                    StartCoroutine(ReboundCoroutine());
+                }
             }
         }
+
+        bool _isRebound = false;
+        public float recoilAmount = 20f;
+        float reboundEffectTime = 0.5f;
+        private IEnumerator ReboundCoroutine()
+        {
+            if (_isRebound == true) yield break;
+
+            _isRebound = true;
+
+            Quaternion startRotation = pitchPivot.localRotation;
+            Quaternion targetRotation = startRotation * Quaternion.Euler(-recoilAmount, 0, 0);
+
+            //recoil start
+            float elapsed = 0f;
+            while (elapsed < reboundEffectTime)
+            {
+                elapsed += Time.deltaTime;
+                float t = elapsed / reboundEffectTime;
+                pitchPivot.localRotation = Quaternion.Slerp(startRotation, targetRotation, t);
+                yield return null;
+            }
+
+            elapsed = 0f;
+            Quaternion currentRotation = pitchPivot.localRotation;
+            while (elapsed < reboundEffectTime)
+            {
+                elapsed += Time.deltaTime;
+                float t = elapsed / reboundEffectTime;
+                pitchPivot.localRotation = Quaternion.Slerp(currentRotation, startRotation, t);
+                yield return null;
+            }
+
+            // 오차 보정
+            pitchPivot.localRotation = startRotation;
+            _isRebound = false;
+        }
+
 
         public bool TryGetTargetWorldPosition(out Vector3 targetWorldPosition)
         {
@@ -202,7 +247,7 @@ namespace TurretDemo
             Vector3 toTargetWorld = (currentTarget.position - pitchPivot.position).normalized;
             Vector3 localDirection = Quaternion.Inverse(yawPivot.rotation) * toTargetWorld;
 
-            float desiredPitchDegrees = Mathf.Atan2(localDirection.y, localDirection.z) * Mathf.Rad2Deg;
+            float desiredPitchDegrees = -Mathf.Atan2(localDirection.y, localDirection.z) * Mathf.Rad2Deg;
             desiredPitchDegrees = Mathf.Clamp(desiredPitchDegrees, minPitchDegrees, maxPitchDegrees);
 
             Vector3 localEuler = pitchPivot.localEulerAngles;
@@ -231,16 +276,16 @@ namespace TurretDemo
             runtimeIsAimedWithinThreshold = angleDegrees <= fireAngleThresholdDegrees;
         }
 
-        private void TryFireIfAimed(Transform currentTarget)
+        private bool TryFireIfAimed(Transform currentTarget)
         {
             if (!runtimeIsAimedWithinThreshold)
             {
-                return;
+                return false;
             }
 
             if (Time.time < lastFireTimeSeconds + fireIntervalSeconds)
             {
-                return;
+                return false;
             }
 
             GameObject spawned = ProjectileSpawner.Spawn(
@@ -255,11 +300,12 @@ namespace TurretDemo
 
             if (spawned == null)
             {
-                return;
+                return false;
             }
 
             OnProjectileFired(spawned);
             lastFireTimeSeconds = Time.time;
+            return true;
         }
     }
 }

@@ -165,6 +165,7 @@ namespace TurretDemo
 
         public void ReturnEnemy(GameObject enemy)
         {
+            enemy.transform.localScale = new Vector3(0.6f, 0.35f, 0.6f);
             enemyPool.Release(enemy);
         }
 

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -47,6 +48,16 @@ namespace TurretDemo
 
         private EnemySpawner spawner;
 
+        private CapsuleCollider myCollider;
+
+        private EnemyLinearMover mover;
+
+        private void Awake()
+        {
+            mover = GetComponent<EnemyLinearMover>();
+            myCollider = GetComponent<CapsuleCollider>();
+        }
+
         private void OnEnable()
         {
             currentHealth = maxHealth;
@@ -85,6 +96,42 @@ namespace TurretDemo
 
         private void Die()
         {
+            StartCoroutine(DieSequeneceCoroutine());
+            StartCoroutine(DieEffectCoroutine());
+        }
+
+        public void SetState(bool tri)
+        {
+            if (tri)
+            {
+                mover.enabled = true;
+                myCollider.enabled = true;
+            }
+            else
+            {
+                mover.enabled = false;
+                myCollider.enabled = false;
+
+            }
+        }
+        float deadEffectTime = 0.5f;
+        Vector3 currentVelocity = Vector3.zero;
+
+        private IEnumerator DieSequeneceCoroutine()
+        {
+
+            float currentTime = deadEffectTime;
+
+            SetState(false);
+
+            while (currentTime > 0)
+            {
+                transform.localScale = Vector3.SmoothDamp(transform.localScale, new Vector3(0, 0, 0), ref currentVelocity, deadEffectTime);
+                currentTime -= Time.deltaTime;
+                yield return null;
+            }
+
+
             if (showDeathMarker)
             {
                 CreateDeathMarker();
@@ -92,12 +139,21 @@ namespace TurretDemo
 
             if (spawner != null)
             {
+                SetState(true);
                 spawner.ReturnEnemy(gameObject);
             }
             else
             {
                 Destroy(gameObject);
             }
+        }
+
+        public GameObject deadEffect;
+        private IEnumerator DieEffectCoroutine()
+        {
+            deadEffect.SetActive(true);
+            yield return new WaitForSeconds(0.3f);
+            deadEffect.SetActive(false);
         }
 
         private void CreateDeathMarker()

@@ -33,7 +33,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.6, y: 0.35, z: 0.6}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 5125878479420740844}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &214587293147237539
@@ -130,9 +131,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TurretDemo.EnemyTarget
   teamId: 1
   maxHealth: 10
-  showDeathMarker: 1
+  showDeathMarker: 0
   deathMarkerLifeTimeSeconds: 0.35
   aimPoint: {fileID: 0}
+  deadEffect: {fileID: 7774418641457086383}
 --- !u!114 &8287636602627673769
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -147,3 +149,74 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TurretDemo.EnemyLinearMover
   moveSpeedUnitsPerSecond: 5
   lifeTimeSeconds: 10
+--- !u!1001 &457007929314416808
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 3155245731809352897}
+    m_Modifications:
+    - target: {fileID: 4716774161297689668, guid: a2ccf81a1d5b163448ebdf66b5e746d6, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.3977333
+      objectReference: {fileID: 0}
+    - target: {fileID: 4716774161297689668, guid: a2ccf81a1d5b163448ebdf66b5e746d6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.28308567
+      objectReference: {fileID: 0}
+    - target: {fileID: 4716774161297689668, guid: a2ccf81a1d5b163448ebdf66b5e746d6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.29174998
+      objectReference: {fileID: 0}
+    - target: {fileID: 4716774161297689668, guid: a2ccf81a1d5b163448ebdf66b5e746d6, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4716774161297689668, guid: a2ccf81a1d5b163448ebdf66b5e746d6, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4716774161297689668, guid: a2ccf81a1d5b163448ebdf66b5e746d6, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4716774161297689668, guid: a2ccf81a1d5b163448ebdf66b5e746d6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4716774161297689668, guid: a2ccf81a1d5b163448ebdf66b5e746d6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4716774161297689668, guid: a2ccf81a1d5b163448ebdf66b5e746d6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4716774161297689668, guid: a2ccf81a1d5b163448ebdf66b5e746d6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7904898002847524615, guid: a2ccf81a1d5b163448ebdf66b5e746d6, type: 3}
+      propertyPath: m_Name
+      value: FX_Purple_Hit_02
+      objectReference: {fileID: 0}
+    - target: {fileID: 7904898002847524615, guid: a2ccf81a1d5b163448ebdf66b5e746d6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: a2ccf81a1d5b163448ebdf66b5e746d6, type: 3}
+--- !u!4 &5125878479420740844 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4716774161297689668, guid: a2ccf81a1d5b163448ebdf66b5e746d6, type: 3}
+  m_PrefabInstance: {fileID: 457007929314416808}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7774418641457086383 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7904898002847524615, guid: a2ccf81a1d5b163448ebdf66b5e746d6, type: 3}
+  m_PrefabInstance: {fileID: 457007929314416808}
+  m_PrefabAsset: {fileID: 0}
